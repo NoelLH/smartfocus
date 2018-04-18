@@ -4,17 +4,14 @@
 
 This is a PHP library for SmartFocus API.
 
-This library provides access to SmartFocus (previously known as EmailVision) [Campaign Commander's APIs]
-(http://developer.smartfocus.com/io-docs). It was designed with flexibility in mind, with fully decoupled components, so it would be easy for developer
+This library provides access to SmartFocus (previously known as EmailVision) [Campaign Commander's APIs](https://help-developer.smartfocus.com/#Home.htm%3FTocPath%3D_____1). It was designed with flexibility in mind, with fully decoupled components, so it would be easy for developer
 to inject and use his own components where appropriate.
-
 
 ## Requirements
 
-- PHP 5.x+
+- PHP 5.3+
 - curl
 - libxml
-
 
 ## Install
 
@@ -36,9 +33,9 @@ as it implements a very simple Api\Http\ClientInterface.
 
 #### Supported APIs and Methods
 
-- [Member REST] (#member-rest) - individual subscription management
-- [Batch Member REST] (#batch-member-rest) - batch subscription management
-- [Notification REST] (#notification-rest) - notification (email sending) service
+- [Member REST](#member-rest) - individual subscription management
+- [Batch Member REST](#batch-member-rest) - batch subscription management
+- [Notification REST](#notification-rest) - notification (email sending) service
 
 ##### Member REST
 
@@ -213,17 +210,14 @@ use Estina\SmartFocus\Api\Rest\Notification;
 $api = new Notification(new CurlClient());
 
 $response = $api->send(
-    'email@example.com',       // Recipient
-    'abcdefg',                 // Encrypt value provided in the interface
-    '132456',                  // ID of the Template
-    '123456789',               // Random value provided for the template
-    array(                     // Dynamic parameters as an array
-        'firstname' => 'John',
-        'lastname' => 'Smith'
-    ),
-    'YYYY-MM-DD HH:MM:SS' // optional, The time you wish to send
-    'email'               // optional, the key you wish to update, normally its email
-    'NOTHING'             // optional, The type of synchronization
+    'email@example.com',             // Recipient
+    'abcdefg',                       // Encrypt value provided in the interface
+    '132456',                        // ID of the Template
+    '123456789',                     // Random value provided for the template
+    'firstname:John|lastname:Smith', // Dynamic parameters as a string
+    'YYYY-MM-DD HH:MM:SS',           // optional, The time you wish to send
+    'email',                         // Now *REQUIRED* - the key you wish to update, normally email
+    'NOTHING'                        // optional, The type of synchronization
 );
 ```
 ### Notification::post(SimpleXMLElement $xmlRequestObject)
@@ -240,22 +234,22 @@ $recipientEmail = 'email@example.com';
 $encryptId = 'abcdefg';
 $randomId = '132456';
 
-$additionalParams = array(
-    'YYYY-MM-DD HH:MM:SS'
-    'email'
-    'NOTHING'
-);
+$additionalParams = [
+    'senddate'      => 'YYYY-MM-DDTHH:MM:SS', // 'T' between date & time
+    'uidkey'        => 'email',
+    'synchrotype'   => 'NOTHING'
+];
 
 // Optional: Dynamic parameters as an array
-$dyn = array(
+$dyn = [
     'firstname' => 'John',
     'lastname' => 'Smith'
-);
+];
 
-$content = array(
+$content = [
     'click <a href="http://somewhere.com">here</a> please',
     'good stuff is available <a href="http://goodstuff.com">here</a>'
-);
+];
 
 // Tracking enabled for the links passed in the content blocks.
 $enableTracking = true;
@@ -292,11 +286,12 @@ Check the following:
 <memberUID>EMAIL:email@example.com</memberUID>
 ```
 
+## Unit test
+
+    composer test
+
 ## More information
 
 SmartFocus documentation is available in the "doc" folder. Also, more detailed
 descriptions of all functions and their parameters are available in the source
 code.
-
-
-
